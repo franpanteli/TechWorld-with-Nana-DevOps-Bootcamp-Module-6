@@ -1,0 +1,166 @@
+1. What is infrastructure as a service (IaaS)?
+    -> definition  
+      infrastructure as a service (IaaS) is a cloud computing model that delivers essential computing resources such as virtual machines, storage, networking, and firewalls over the internet. It offers users the ability to rent IT infrastructure on demand, instead of owning or maintaining physical hardware 
+ 
+    -> core resources  
+      -> compute: virtual machines (VMs) or instances running applications  
+      -> storage: scalable storage solutions for data  
+      -> networking: configurable network infrastructure (e.g., virtual private networks, firewalls)  
+
+    -> why use IaaS?  
+      -> cost-effective: no upfront capital costs for hardware. You only pay for what you use  
+      -> scalability: easy to scale resources up or down based on demand  
+      -> flexibility: access to high-performance infrastructure without needing to buy expensive physical servers  
+      -> reliability: cloud providers typically offer high availability, with built-in redundancy  
+
+    -> IaaS vs traditional servers  
+      Instead of purchasing physical servers, maintaining hardware, and handling failures, IaaS provides a model where users rent virtual servers and can scale them as needed. The cloud provider takes care of hardware failures, and you only manage the software side 
+ 
+    -> example providers  
+      popular IaaS providers include amazon web services (AWS), google cloud platform (GCP), microsoft azure, and DigitalOcean
+
+2. Cloud computing overview
+    -> definition  
+      cloud computing refers to the delivery of computing services like servers, storage, databases, networking, and software over the internet. Instead of running software or maintaining infrastructure on local servers, cloud computing allows access to these resources through the cloud  
+
+    -> IaaS vs other cloud models  
+      Cloud computing encompasses multiple service models:  
+      -> software as a service (SaaS): applications delivered over the internet (e.g., gmail, slack)  
+      -> platform as a service (PaaS): provides a platform for developers to build, run, and manage applications without worrying about underlying infrastructure (e.g., google app engine)  
+      -> serverless: a cloud model where users don’t manage servers but run functions in response to events, scaling automatically (e.g., AWS lambda)  
+      -> IaaS: provides virtualised computing resources over the internet
+
+3. Infrastructure as a service providers
+    -> Amazon web services (AWS)  
+      AWS is the most used IaaS platform, offering powerful resources but can be complex to set up  
+      Key features: EC2 for compute, S3 for storage, VPC for networking, RDS for managed databases  
+      More suitable for large-scale deployments and enterprise solutions  
+    -> DigitalOcean  
+      Known for being beginner-friendly and cost-effective  
+      focuses on simplicity and ease of use. It’s often the go-to for smaller projects and startups  
+      provides managed databases, object storage, and Kubernetes support  
+
+    -> Pre-requisites for using DigitalOcean  
+      1. create a DigitalOcean account: sign up and get a free tier or credits for usage  
+      2. set up SSH keys: SSH keys are used for secure access to your remote servers  
+      3. create a droplet: a droplet is a virtual machine running Linux (Ubuntu preferred for this bootcamp)  
+      4. open SSH port 22: ensure you allow inbound SSH connections by configuring the firewall  
+      5. SSH into the droplet: using the public IP address, SSH into the server  
+      6. install Java: java is needed for running Java-based applications. Install java on the server to run Java applications
+
+4. Setting up a server on DigitalOcean
+    -> steps to set up the server  
+      1. create a droplet: choose the Ubuntu distribution (or other distributions depending on requirements). Select the desired specifications for RAM, CPUs, and storage  
+      2. configure SSH keys: add your public SSH key to your droplet to allow secure SSH access  
+      3. open SSH port 22: use DigitalOcean’s firewall settings to open port 22 for SSH connections  
+      4. SSH into droplet: use the command `ssh root@<public-ip>` to connect to your server remotely  
+      5. install Java: install java using a package manager or by downloading the necessary binaries  
+
+    -> security considerations  
+      -> change the root password and set up a firewall to only allow necessary ports  
+      -> add a user for specific applications to reduce the risk of security breaches by restricting access
+
+5. Running java applications on a remote server
+    -> build, copy, and run java application  
+      1. build JAR file: package your java code into a `.jar` file using build tools like maven or gradle  
+      2. copy to remote server: transfer the JAR file using SCP (secure copy protocol) or SFTP (SSH file transfer protocol) to the DigitalOcean droplet  
+      3. run the application: execute the JAR file on the server with the command `java -jar <your-application>.jar`  
+
+    -> Real-world scenario  
+      Applications are typically hosted on remote servers instead of local machines, making cloud-based servers ideal for hosting java applications
+
+6. Security best practices for cloud servers
+    -> root user access  
+      It’s considered bad practice to work directly with the root user due to security risks. Always create a separate user for each application to ensure proper isolation  
+    -> create admin and application users  
+      use an "admin" user for management tasks and individual users for each application (e.g., nexus, jenkins)  
+    -> permission management  
+      Only give users the necessary permissions they need to operate their specific application or service  
+    -> SSH key-based authentication  
+      use SSH keys for secure authentication rather than passwords, which are vulnerable to brute force attacks
+
+-> artifact repository manager with nexus
+
+1. What is an artifact repository?
+    -> definition  
+      an artifact repository is a central location where build artifacts (e.g., JAR, WAR, TAR files) are stored and managed. Artifacts are typically the output of continuous integration (CI) pipelines and can be versioned for easy deployment  
+    -> use case  
+      artifact repositories centralise the storage of build artifacts, making them available for deployment across various environments, reducing the complexity of managing artifacts across multiple servers or environments  
+
+    -> artifact types  
+      examples of artifacts include:  
+      -> JAR files (java)  
+      -> WAR files (web applications)  
+      -> Docker images  
+      -> Python packages (e.g., `.whl`, `.tar.gz`)  
+    -> benefits  
+      -> centralised storage for all artifacts  
+      -> supports multiple formats to manage different types of artifacts  
+      -> enables version control for artifacts, ensuring compatibility and reproducibility of deployments
+
+2. Public vs private artifact repositories
+    -> public repositories  
+      these repositories host widely used dependencies like libraries and frameworks. Examples include maven central and npm registry  
+    -> private repositories  
+      internal repositories used by organisations to store proprietary or internal artifacts. Tools like nexus and artifactory are commonly used to host private repositories  
+    -> why use nexus for private repositories  
+      Nexus supports managing internal artifacts securely and provides fine-grained access control. Organisations can ensure that only authorised users or systems can access sensitive artifacts
+
+3. Features of nexus repository manager
+    -> Multi-format support  
+      Nexus supports a variety of artifact formats like:  
+      -> Maven2: for java-based artifacts like JAR files  
+      -> Docker: for docker images  
+      -> NuGet: for .NET artifacts  
+      -> npm: for javascript and node.js packages  
+      -> Python: for python artifacts  
+
+    -> backup & restore  
+      automated backup and restore processes ensure that artifacts and repository configurations are safe and retrievable in case of failure  
+    -> metadata tagging  
+      artifacts can be tagged with metadata, such as version, status (e.g., development, production), or other custom tags, to organise and retrieve them easily  
+    -> search functionality  
+      Nexus provides robust search capabilities, allowing users to search for specific artifacts, versions, or metadata across repositories
+
+4. Installing and running nexus on a cloud server
+    -> requirements  
+      - minimum specs: 4GB RAM, 2 CPUs, and 160GB SSD  
+    -> installation steps  
+      1. install Java 8: Nexus requires Java 8 to run, so ensure Java is installed  
+      2. download and install nexus: download Nexus Repository Manager from the official website and follow the installation guide  
+      3. create a dedicated user for nexus: for security, create a new user named `nexus` to run Nexus rather than using the root user  
+      4. firewall configuration: open port 8081 on the firewall to access the Nexus UI  
+      5. start Nexus: run Nexus with the `nexus` user to ensure the application has only the necessary permissions
+
+5. Repository types & formats in nexus
+    -> repository formats  
+      Nexus allows you to create different types of repositories depending on the artifact format:  
+      -> Maven2: for java-based artifacts like JAR files  
+      -> Docker: for docker images  
+      -> NuGet: for .NET artifacts  
+      -> npm: for javascript and node.js packages  
+    -> repository types  
+      -> Hosted: repository for storing your own company’s artifacts  
+      -> Proxy: intermediary for caching external repositories  
+      -> Group: aggregates multiple repositories into one access point
+
+6. Nexus REST API
+    -> features  
+      Nexus provides a REST API for interacting with repositories and artifacts programmatically. You can use this API to automate tasks such as:  
+      -> uploading and downloading artifacts  
+      -> retrieving repository details  
+      -> listing available artifacts  
+    -> authentication  
+      you must authenticate via username and password (or token) to interact with the Nexus API securely  
+    -> usage  
+      use tools like `curl` or `wget` to interact with the Nexus API for tasks like querying or uploading artifacts
+
+7. Cleanup policies & scheduled tasks
+    -> cleanup policies  
+      you can configure cleanup rules in Nexus to automatically delete old or unused artifacts based on criteria such as:  
+      -> age of the artifact (e.g., delete after 30 days)  
+      -> usage (e.g., delete artifacts that haven’t been accessed for more than 10 days)  
+    -> scheduled tasks  
+      Nexus allows users to define scheduled tasks to automate cleanup, backup, or other maintenance operations on a regular basis  
+    -> why cleanup is important  
+      ensures that repositories don’t become bloated with outdated or unnecessary artifacts, keeping storage costs low and making it easier to find relevant artifacts
